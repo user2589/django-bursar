@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!DOCTYPE paymentService PUBLIC "-//RBS WorldPay//DTD RBS WorldPay PaymentService v1//EN" "http://dtd.wp3.rbsworldpay.com/paymentService_v1.dtd">
+<paymentService version="1.4" merchantCode="{{ MERCHANT_ID }}">
+{% block content %}{% endblock %}
+</paymentService>

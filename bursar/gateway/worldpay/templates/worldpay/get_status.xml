@@ -1,0 +1,7 @@
+{% extends 'worldpay/_base.xml'%}
+
+{% block content %}
+<inquiry>
+    <orderInquiry orderCode="{{ payment.transaction_id|default:payment.id }}" />
+</inquiry>
+{% endblock %}

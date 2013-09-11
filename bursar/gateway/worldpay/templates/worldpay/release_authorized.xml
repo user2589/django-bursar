@@ -1,0 +1,3 @@
+{% extends 'worldpay/_modify.xml'%}
+
+{% block orderModification %}<cancel />{% endblock %}

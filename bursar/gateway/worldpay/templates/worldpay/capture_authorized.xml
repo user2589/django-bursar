@@ -1,0 +1,7 @@
+{% extends 'worldpay/_modify.xml'%}{% load worldpay_tags %}
+
+{% block orderModification %}
+<capture>
+    <amount value="{{ amount|amount }}" currencyCode="{{ currency }}" exponent="2" />
+</capture>
+{% endblock %}

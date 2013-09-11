@@ -1,0 +1,61 @@
+{% extends 'worldpay/_base.xml'%}{% load worldpay_tags %}
+
+{% block content %}
+    <submit>
+        <order orderCode="{{ payment.transaction_id|default:payment.id }}">
+            <description>{{ payment.purchase }}</description>
+            <amount value="{{ payment.amount|amount }}" currencyCode="{{ currency }}" exponent="2" />
+            <orderContent><![CDATA[{% for lineitem in payment.purchase %}
+                    {{ lineitem }}
+            {% endfor %}]]></orderContent>
+
+            <paymentDetails>
+                <{{ payment_method }}>
+                    <cardNumber>{{ form_data.card_no }}</cardNumber>
+                    {% if form_data.expiry %}<expiryDate>
+                        <date month="{{ form_data.expiry|date:'m' }}" year="{{ form_data.expiry|date:'Y' }}" />
+                    </expiryDate>{% endif %}
+                    <cardHolderName>{{ form_data.name }}</cardHolderName>
+                    {% if form_data.cvc %}<cvc>{{ form_data.cvc }}</cvc>{% endif %}
+                    {% if form_data.issue_num %}<issueNumber>{{ form_data.issue_num }}</issueNumber>{% endif %}
+                    <cardAddress>
+                        <address>
+                            {% if form_data.first_name %}<firstName>{{ form_data.first_name }}</firstName>{% endif %}
+                            {% if form_data.last_name %}<lastName>{{ form_data.last_name }}</lastName>{% endif %}
+                            <street>{{ form_data.address }}</street>
+                            {% if form_data.address2 %}<houseName>{{ form_data.address2 }}</houseName>{% endif %}
+                            <postalCode>{{ form_data.zip }}</postalCode>
+                            <city>{{ form_data.city }}</city>
+                            <countryCode>{{ form_data.country.code }}</countryCode>
+                            <telephoneNumber>{{ form_data.phone }}</telephoneNumber>
+                        </address>
+                    </cardAddress>
+                </{{ payment_method }}>
+                <session shopperIPAddress="{{ request.META.REMOTE_ADDR }}" id="{{ request.session.session_key }}" />
+            </paymentDetails>
+
+            <shopper>
+                <shopperEmailAddress>{{ form_data.email }}</shopperEmailAddress>
+                <browser>
+                    <acceptHeader>{{ request.META.HTTP_ACCEPT }}</acceptHeader>
+                    <userAgentHeader>{{ request.META.HTTP_USER_AGENT }}</userAgentHeader>
+                </browser>
+            </shopper>
+
+            {% if payment.purchase.shipping_address %}{% with shipping_address=payment.purchase.shipping_address %}
+            <shippingAddress>
+                <address>
+                    {% if shipping_address.first_name %}<firstName>{{ shipping_address.first_name }}</firstName>{% endif %}
+                    {% if shipping_address.last_name %}<lastName>{{ shipping_address.last_name }}</lastName>{% endif %}
+                    <street>{{ shipping_address.street_address1 }}</street>
+                    {% if shipping_address.street_address2 %}<houseName>{{ shipping_address.street_address2 }}</houseName>{% endif %}
+                    <postalCode>{{ shipping_address.postal_code }}</postalCode>
+                    <city>{{ shipping_address.city }}</city>
+                    <countryCode>{{ shipping_address.country }}</countryCode>
+                    {% if shipping_address.phone %}<telephoneNumber>{{ shipping_address.phone }}</telephoneNumber>{% endif %}
+                </address>
+            </shippingAddress>
+            {% endwith %}{% endif %}
+        </order>
+    </submit>
+{% endblock %}

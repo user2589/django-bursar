@@ -1,0 +1,9 @@
+{% extends 'worldpay/_base.xml'%}
+
+{% block content %}
+<modify>
+    <orderModification orderCode="{{ payment.transaction_id|default:payment.id }}">
+        {% block orderModification %}{% endblock %}
+    </orderModification>
+</modify>
+{% endblock %}
